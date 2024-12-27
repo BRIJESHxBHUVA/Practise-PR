@@ -2,7 +2,18 @@ const Admin = require('../model/adminSchema')
 const path = require('path')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
+const moment = require('moment')
 
+
+
+module.exports.allAdmin = async (req, res)=> {
+    try {
+        const data = await Admin.find({})
+        res.status(200).json({success: true, message: "Admin find successfully.",data})
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 module.exports.addAdmin = async (req, res)=> {
     try {
@@ -10,6 +21,15 @@ module.exports.addAdmin = async (req, res)=> {
         if(existemail){
             return res.status(400).json({success: false, message: "Email address already exist."})
         }
+        if(req.file){
+            req.body.image = req.file.filename
+        }
+        if(req.body.password !== req.body.confirmps){
+            return res.status(400).json({success: false, message: "Password and comfirm password must be same."})
+        }
+
+        req.body.createdAT = moment().format('LLLL')
+
         const data = await Admin.create(req.body)
         res.status(201).json({success: true, message: "Admin regestration successfully.", data})
     } catch (error) {
@@ -56,8 +76,9 @@ module.exports.edit = async (req, res)=> {
 module.exports.loginAdmin = async (req, res)=> {
     try {
         const Admindata = await Admin.findOne({email: req.body.email})
+        console.log(Admindata)
         if(Admindata){
-            if(Admindata.password){
+            if(req.body.password === Admindata.password){
                 const token = jwt.sign({id: Admindata._id}, 'admin', {expiresIn: '5h'})
                 res.status(200).json({success: true, message: "Login successfully.", Admindata, token})
             }else{
@@ -68,5 +89,23 @@ module.exports.loginAdmin = async (req, res)=> {
         }
     } catch (error) {
         res.status(400).json({success: false, message: "Admin login error", error})
+    }
+}
+
+
+module.exports.deleteAdmin = async (req, res)=> {
+    try {
+        const adminimage = await Admin.findById(req.query.id)
+        if(adminimage.image){
+            const oldImage = path.join(__dirname, '../Images/Admin/', adminimage.image)
+            if(fs.existsSync(oldImage)){
+                fs.unlinkSync(oldImage)
+            }
+        }
+        const data = await Admin.findByIdAndDelete(req.query.id)
+        res.status(200).json({success: true, message: "Admin deleting successfully.", data})
+        
+    } catch (error) {
+        res.status(400).json({success: false, message: "Admin deleting error", error})
     }
 }

@@ -16,11 +16,12 @@ const storage = multer.diskStorage({
     
 const upload = multer({storage: storage}).single('image')
 
-router.get('/' ,productCTL.getProduct)
-router.post('/addproduct' ,upload ,productCTL.addProduct)
-router.delete('/delete' ,upload ,productCTL.deleteProduct)
-router.get('/editproduct' ,productCTL.editProduct)
-router.put('/edit' ,upload ,productCTL.edit)
+
+router.get('/', middleware.checkAuth ,productCTL.getProduct)
+router.post('/addproduct', middleware.checkAuth ,upload ,productCTL.addProduct)
+router.delete('/delete', middleware.checkAuth ,upload ,productCTL.deleteProduct)
+router.get('/editproduct', middleware.checkAuth ,productCTL.editProduct)
+router.put('/edit', middleware.checkAuth ,upload ,productCTL.edit)
 
 
 module.exports = router

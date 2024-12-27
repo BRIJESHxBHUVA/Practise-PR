@@ -15,10 +15,11 @@ const storage = multer.diskStorage({
     
 const upload = multer({storage: storage}).single('image')
 
-
+router.get('/', adminCTL.allAdmin)
 router.post('/addadmin', upload, adminCTL.addAdmin)
-router.get('/editadmin', adminCTL.editAdmin)
-router.put('/edit', upload, adminCTL.edit)
+router.get('/editadmin', middleware.checkAuth ,adminCTL.editAdmin)
+router.put('/edit', middleware.checkAuth ,upload, adminCTL.edit)
 router.post('/login', adminCTL.loginAdmin)
+router.delete('/delete', middleware.checkAuth, adminCTL.deleteAdmin)
 
 module.exports = router

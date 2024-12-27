@@ -17,12 +17,9 @@ const adminSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    confirmpa: {
-        type: String,
-        require: true
-    },
     image: {
         type: String,
+        require: true
     },
     createdAT: {
         type: String,

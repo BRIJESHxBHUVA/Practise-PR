@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 
 module.exports.checkAuth = async (req, res, next)=> {
 
-    const token = res.header("Authorization")?.replace('Bearer', '')
+    const token = req.header("Authorization").replace('Bearer ', '')
 
     if(!token){
         res.status(401).json({success: false, message: 'Access Denied. No token provided.'})

@@ -1,11 +1,15 @@
 const express = require('express')
 const app = express()
-const port = 4000
+const port = 1800
 const cors = require('cors')
-app.use(express.json())
-app.use(cors())
 const db = require('./database/db')
 const path = require('path')
+
+
+app.use(express.json())
+app.use(cors())
+app.use(express.urlencoded())
+
 
 app.use('/product', require('./routes/productRouting'))
 app.use('/admin', require('./routes/adminRoutes'))
