@@ -7,7 +7,7 @@ const middleware = require('../middleware/adminAuth')
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
         cb(null, 'Images/Admin')
-    },
+    },  
     filename: function(req, file, cb){
         cb(null, Date.now() + '-' + file.originalname)
     }
@@ -20,6 +20,6 @@ router.post('/addadmin', upload, adminCTL.addAdmin)
 router.get('/editadmin', middleware.checkAuth ,adminCTL.editAdmin)
 router.put('/edit', middleware.checkAuth ,upload, adminCTL.edit)
 router.post('/login', adminCTL.loginAdmin)
-router.delete('/delete', middleware.checkAuth, adminCTL.deleteAdmin)
+router.delete('/delete', middleware.checkAuth, upload ,adminCTL.deleteAdmin)
 
 module.exports = router
